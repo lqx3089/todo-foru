@@ -22,6 +22,7 @@ find_package(Qt6 6.2 REQUIRED COMPONENTS
     Quick
     Qml
     Sql
+    Network
 )
 
 qt_standard_project_setup()
@@ -36,6 +37,10 @@ set(APP_SOURCES
     src/core/Logging.cpp
     src/auth/AuthService.h
     src/auth/AuthService.cpp
+    src/auth/Pkce.h
+    src/auth/Pkce.cpp
+    src/auth/LocalHttpServer.h
+    src/auth/LocalHttpServer.cpp
     src/sync/SyncEngine.h
     src/sync/SyncEngine.cpp
     src/data/Database.h
@@ -81,6 +86,7 @@ target_link_libraries(todo-foru PRIVATE
     Qt6::Quick
     Qt6::Qml
     Qt6::Sql
+    Qt6::Network
 )
 
 # Installation

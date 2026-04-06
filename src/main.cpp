@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     }
 
     // ── 5. Services ──────────────────────────────────────────────────────────
-    AuthService  authService;
+    AuthService  authService(&config);
     SyncEngine   syncEngine;
     syncEngine.configure(config.autoSync(), config.autoSyncIntervalSeconds());
 
