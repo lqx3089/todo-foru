@@ -325,7 +325,7 @@ bool AuthService::exchangeCodeForTokens(const QString &code, QString *errorOut)
     form.addQueryItem(QStringLiteral("code_verifier"), m_codeVerifier);
     form.addQueryItem(QStringLiteral("scope"), joinedScopes(m_config));
 
-    QNetworkRequest req(QUrl(tokenEndpoint()));
+    QNetworkRequest req{QUrl(tokenEndpoint())};
     req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/x-www-form-urlencoded"));
     QNetworkReply *reply = m_network.post(req, form.toString(QUrl::FullyEncoded).toUtf8());
 
@@ -384,7 +384,7 @@ bool AuthService::refreshAccessToken(QString *errorOut)
     form.addQueryItem(QStringLiteral("client_id"), m_config->clientId());
     form.addQueryItem(QStringLiteral("scope"), joinedScopes(m_config));
 
-    QNetworkRequest req(QUrl(tokenEndpoint()));
+    QNetworkRequest req{QUrl(tokenEndpoint())};
     req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/x-www-form-urlencoded"));
     QNetworkReply *reply = m_network.post(req, form.toString(QUrl::FullyEncoded).toUtf8());
 
