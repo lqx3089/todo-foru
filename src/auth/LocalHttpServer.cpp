@@ -70,7 +70,7 @@ void LocalHttpServer::onSocketReadyRead()
 
     if (!error.isEmpty()) {
         const QString html = QStringLiteral("<html><body>You may close this window. Login failed: %1</body></html>")
-                                 .arg(errorDescription.isEmpty() ? error : errorDescription.toHtmlEscaped());
+                                 .arg(errorDescription.isEmpty() ? error.toHtmlEscaped() : errorDescription.toHtmlEscaped());
         writeHttpResponse(socket, 200, html);
         emit callbackReceived(QString(), state, error, errorDescription);
         return;

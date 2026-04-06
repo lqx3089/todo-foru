@@ -19,6 +19,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QEventLoop>
+#include <QTimer>
 #include <QDebug>
 
 namespace {
@@ -329,8 +330,29 @@ bool AuthService::exchangeCodeForTokens(const QString &code, QString *errorOut)
     QNetworkReply *reply = m_network.post(req, form.toString(QUrl::FullyEncoded).toUtf8());
 
     QEventLoop loop;
+    QTimer timeout;
+    timeout.setSingleShot(true);
+    timeout.setInterval(20000);
+    bool timedOut = false;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timeout, &QTimer::timeout, &loop, [&]() {
+        timedOut = true;
+        if (reply->isRunning()) {
+            reply->abort();
+        }
+        loop.quit();
+    });
+    timeout.start();
     loop.exec();
+    timeout.stop();
+
+    if (timedOut) {
+        if (errorOut) {
+            *errorOut = QStringLiteral("Token exchange request timed out");
+        }
+        reply->deleteLater();
+        return false;
+    }
 
     const QByteArray body = reply->readAll();
     const bool ok = (reply->error() == QNetworkReply::NoError) && parseAndStoreTokenResponse(body, errorOut);
@@ -367,8 +389,29 @@ bool AuthService::refreshAccessToken(QString *errorOut)
     QNetworkReply *reply = m_network.post(req, form.toString(QUrl::FullyEncoded).toUtf8());
 
     QEventLoop loop;
+    QTimer timeout;
+    timeout.setSingleShot(true);
+    timeout.setInterval(20000);
+    bool timedOut = false;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timeout, &QTimer::timeout, &loop, [&]() {
+        timedOut = true;
+        if (reply->isRunning()) {
+            reply->abort();
+        }
+        loop.quit();
+    });
+    timeout.start();
     loop.exec();
+    timeout.stop();
+
+    if (timedOut) {
+        if (errorOut) {
+            *errorOut = QStringLiteral("Token refresh request timed out");
+        }
+        reply->deleteLater();
+        return false;
+    }
 
     const QByteArray body = reply->readAll();
     const bool ok = (reply->error() == QNetworkReply::NoError) && parseAndStoreTokenResponse(body, errorOut);
