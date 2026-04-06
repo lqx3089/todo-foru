@@ -194,6 +194,25 @@ static QVariantMap section(const QVariantMap &root, const QString &key)
     return root.value(key).toMap();
 }
 
+// Qt6 removed the default-value overloads of QVariant::toString/toBool/toInt.
+// These helpers restore the "return default when value is missing or invalid" semantics.
+static QString variantToString(const QVariant &v, const QString &defaultVal)
+{
+    return (v.isValid() && !v.isNull()) ? v.toString() : defaultVal;
+}
+
+static bool variantToBool(const QVariant &v, bool defaultVal)
+{
+    return (v.isValid() && !v.isNull()) ? v.toBool() : defaultVal;
+}
+
+static int variantToInt(const QVariant &v, int defaultVal)
+{
+    bool ok = false;
+    const int n = v.toInt(&ok);
+    return ok ? n : defaultVal;
+}
+
 QString ConfigService::clientId() const
 {
     return section(m_root, "auth").value("client_id").toString();
@@ -221,7 +240,7 @@ QString ConfigService::tokenCachePath() const
 
 QString ConfigService::tenant() const
 {
-    return section(m_root, "auth").value("tenant").toString("common");
+    return variantToString(section(m_root, "auth").value("tenant"), QStringLiteral("common"));
 }
 
 QString ConfigService::dbPath() const
@@ -231,47 +250,47 @@ QString ConfigService::dbPath() const
 
 bool ConfigService::enableOfflineMode() const
 {
-    return section(m_root, "storage").value("enable_offline_mode").toBool(true);
+    return variantToBool(section(m_root, "storage").value("enable_offline_mode"), true);
 }
 
 bool ConfigService::outboxEnabled() const
 {
-    return section(m_root, "storage").value("outbox_enabled").toBool(true);
+    return variantToBool(section(m_root, "storage").value("outbox_enabled"), true);
 }
 
 bool ConfigService::syncOnStartup() const
 {
-    return section(m_root, "sync").value("sync_on_startup").toBool(true);
+    return variantToBool(section(m_root, "sync").value("sync_on_startup"), true);
 }
 
 bool ConfigService::autoSync() const
 {
-    return section(m_root, "sync").value("auto_sync").toBool(true);
+    return variantToBool(section(m_root, "sync").value("auto_sync"), true);
 }
 
 int ConfigService::autoSyncIntervalSeconds() const
 {
-    return section(m_root, "sync").value("auto_sync_interval_seconds").toInt(300);
+    return variantToInt(section(m_root, "sync").value("auto_sync_interval_seconds"), 300);
 }
 
 int ConfigService::networkTimeoutSeconds() const
 {
-    return section(m_root, "sync").value("network_timeout_seconds").toInt(20);
+    return variantToInt(section(m_root, "sync").value("network_timeout_seconds"), 20);
 }
 
 QString ConfigService::theme() const
 {
-    return section(m_root, "ui").value("theme").toString("light-cute");
+    return variantToString(section(m_root, "ui").value("theme"), QStringLiteral("light-cute"));
 }
 
 bool ConfigService::showCompletedTasks() const
 {
-    return section(m_root, "ui").value("show_completed_tasks").toBool(false);
+    return variantToBool(section(m_root, "ui").value("show_completed_tasks"), false);
 }
 
 QString ConfigService::logLevel() const
 {
-    return section(m_root, "logging").value("level").toString("info");
+    return variantToString(section(m_root, "logging").value("level"), QStringLiteral("info"));
 }
 
 QString ConfigService::logFile() const
