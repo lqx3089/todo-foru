@@ -80,6 +80,15 @@ Item {
             onClicked: AppViewModel.login()
         }
 
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: AppViewModel.authStatusText
+            color: Theme.textSecondary
+            font.pixelSize: Theme.fontSizeS
+            font.family: Theme.fontFamily
+            horizontalAlignment: Text.AlignHCenter
+        }
+
         // ── Info note ─────────────────────────────────────────────────────────
         Text {
             anchors.horizontalCenter: parent.horizontalCenter

@@ -35,6 +35,7 @@ class AppViewModel : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY loggedInChanged)
+    Q_PROPERTY(QString authStatusText READ authStatusText NOTIFY authStatusTextChanged)
     Q_PROPERTY(QString syncStatus READ syncStatus NOTIFY syncStatusChanged)
     Q_PROPERTY(QString lastSyncText READ lastSyncText NOTIFY lastSyncTextChanged)
     Q_PROPERTY(TaskListsModel* taskListsModel READ taskListsModel CONSTANT)
@@ -46,6 +47,7 @@ public:
     bool    loggedIn()     const;
     QString syncStatus()   const;
     QString lastSyncText() const;
+    QString authStatusText() const;
 
     TaskListsModel *taskListsModel();
     TasksModel     *tasksModel();
@@ -62,6 +64,7 @@ signals:
     void loggedInChanged(bool loggedIn);
     void syncStatusChanged(const QString &status);
     void lastSyncTextChanged(const QString &text);
+    void authStatusTextChanged(const QString &text);
 
 private:
     AuthService     *m_auth  = nullptr;
@@ -71,6 +74,7 @@ private:
 
     // fallback values used before services are injected
     bool    m_loggedIn    = false;
+    QString m_authStatusText = QStringLiteral("Not logged in");
     QString m_syncStatus  = QStringLiteral("Idle");
     QString m_lastSyncText= QStringLiteral("Never");
 };

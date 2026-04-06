@@ -19,6 +19,10 @@ void AppViewModel::setServices(AuthService *auth, SyncEngine *sync)
             m_loggedIn = v;
             emit loggedInChanged(v);
         });
+        connect(m_auth, &AuthService::authStatusTextChanged, this, [this](const QString &text) {
+            m_authStatusText = text;
+            emit authStatusTextChanged(text);
+        });
     }
 
     // Wire sync signals
@@ -37,6 +41,11 @@ void AppViewModel::setServices(AuthService *auth, SyncEngine *sync)
 bool AppViewModel::loggedIn() const
 {
     return m_auth ? m_auth->loggedIn() : m_loggedIn;
+}
+
+QString AppViewModel::authStatusText() const
+{
+    return m_auth ? m_auth->authStatusText() : m_authStatusText;
 }
 
 QString AppViewModel::syncStatus() const
