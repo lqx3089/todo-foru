@@ -82,7 +82,7 @@ The compiled binary is at `build/todo-foru`.
 
 On first launch, a default `config.json` is written to
 `~/.config/todo-foru/config.json`.  Copy `config.json.example` there and
-fill in your Azure `client_id` to enable real login:
+fill in your Azure `client_id` to enable OAuth2 + PKCE login:
 
 ```bash
 mkdir -p ~/.config/todo-foru
@@ -90,10 +90,19 @@ cp config.json.example ~/.config/todo-foru/config.json
 # edit config.json and set auth.client_id
 ```
 
-> **Azure App Registration**  
-> 1. Go to <https://portal.azure.com> → Azure Active Directory → App registrations → New registration  
-> 2. Platform: **Mobile and desktop applications**, redirect URI: `http://localhost:53682/callback`  
-> 3. Copy the **Application (client) ID** into `config.json` → `auth.client_id`
+### Azure App Registration (required for login)
+
+1. Go to <https://portal.azure.com> → Azure Active Directory → **App registrations** → **New registration**.
+2. In **Authentication**, add platform **Mobile and desktop applications**.
+3. Add redirect URI **exactly** as: `http://localhost:53682/callback`.
+4. Under API permissions / scopes, ensure requested scopes include at least:
+   - `Tasks.ReadWrite`
+   - `offline_access`
+5. Copy the **Application (client) ID** into `config.json` → `auth.client_id`.
+
+> ⚠️ Security note: `auth.token_cache_path` stores tokens in plaintext JSON
+> (`token_cache.json`). Keep local filesystem permissions strict and avoid
+> sharing this file.
 
 ---
 
@@ -161,7 +170,8 @@ Key fields:
 | Key | Description |
 |-----|-------------|
 | `auth.client_id` | **Required** – Azure app client ID |
-| `auth.redirect_uri` | Must match Azure registration |
+| `auth.redirect_uri` | Must be `http://localhost:53682/callback` and match Azure registration |
+| `auth.scopes` | Must include at least `Tasks.ReadWrite offline_access` |
 | `storage.db_path` | SQLite database path (supports `~`) |
 | `sync.auto_sync_interval_seconds` | Auto-sync frequency (default 300 s) |
 | `ui.theme` | `light-cute` or `dark-cute` |

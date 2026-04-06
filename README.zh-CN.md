@@ -79,7 +79,7 @@ cmake --build build --parallel
 ```
 
 首次启动时，默认配置文件 `config.json` 会写入到 `~/.config/todo-foru/config.json`。
-请将 `config.json.example` 复制到该目录，并填写你的 Azure `client_id` 以启用真实登录：
+请将 `config.json.example` 复制到该目录，并填写你的 Azure `client_id` 以启用 OAuth2 + PKCE 真实登录：
 
 ```bash
 mkdir -p ~/.config/todo-foru
@@ -87,10 +87,18 @@ cp config.json.example ~/.config/todo-foru/config.json
 # 编辑 config.json，设置 auth.client_id
 ```
 
-> **Azure 应用注册**  
-> 1. 访问 <https://portal.azure.com> → Azure Active Directory → 应用注册 → 新注册  
-> 2. 平台选择：**移动和桌面应用**，重定向 URI：`http://localhost:53682/callback`  
-> 3. 将 **应用程序 (客户端) ID** 填入 `config.json` → `auth.client_id`
+### Azure 应用注册（登录必需）
+
+1. 访问 <https://portal.azure.com> → Azure Active Directory → **应用注册** → **新注册**。
+2. 在 **身份验证** 中添加平台 **移动和桌面应用**。
+3. 重定向 URI 必须**严格**填写为：`http://localhost:53682/callback`。
+4. API 权限 / scopes 至少应包含：
+   - `Tasks.ReadWrite`
+   - `offline_access`
+5. 将 **应用程序（客户端）ID** 填入 `config.json` 的 `auth.client_id`。
+
+> ⚠️ 安全提示：`auth.token_cache_path` 中的 `token_cache.json` 以明文 JSON 保存 token。
+> 请确保本地文件权限安全，不要共享该文件。
 
 ---
 
@@ -158,7 +166,8 @@ SQLite 数据库默认位于 `~/.local/share/todo-foru/todo.db`（可配置）�
 | 键 | 说明 |
 |----|------|
 | `auth.client_id` | **必填** – Azure 应用客户端 ID |
-| `auth.redirect_uri` | 需与 Azure 注册一致 |
+| `auth.redirect_uri` | 必须为 `http://localhost:53682/callback`，并与 Azure 注册一致 |
+| `auth.scopes` | 至少包含 `Tasks.ReadWrite offline_access` |
 | `storage.db_path` | SQLite 数据库路径（支持 `~`） |
 | `sync.auto_sync_interval_seconds` | 自动同步频率（默认 300 秒） |
 | `ui.theme` | `light-cute` 或 `dark-cute` |
