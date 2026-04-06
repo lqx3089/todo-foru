@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "client_id": "YOUR_AZURE_APP_CLIENT_ID",
+    "tenant": "common",
+    "redirect_uri": "http://localhost:53682/callback",
+    "scopes": [
+      "offline_access",
+      "openid",
+      "profile",
+      "User.Read",
+      "Tasks.ReadWrite"
+    ],
+    "token_cache_path": "~/.config/todo-foru/token_cache.json"
+  },
+  "storage": {
+    "db_path": "~/.local/share/todo-foru/todo.db",
+    "enable_offline_mode": true,
+    "outbox_enabled": true
+  },
+  "sync": {
+    "sync_on_startup": true,
+    "auto_sync": true,
+    "auto_sync_interval_seconds": 300,
+    "network_timeout_seconds": 20,
+    "conflict_policy": "last_write_wins"
+  },
+  "ui": {
+    "theme": "light-cute",
+    "show_completed_tasks": false,
+    "date_format": "yyyy-MM-dd",
+    "time_format": "HH:mm"
+  },
+  "print": {
+    "include_notes": true,
+    "default_export_dir": "~/Documents"
+  },
+  "logging": {
+    "level": "info",
+    "file": "~/.local/share/todo-foru/app.log"
+  }
+}

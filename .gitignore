@@ -1,0 +1,51 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# Qt generated files
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+*.autogen/
+.qmake.stash
+
+# Compiled object files
+*.o
+*.obj
+
+# Executables
+todo-foru
+*.exe
+*.app/
+
+# User config (do not commit personal settings)
+config.json
+
+# Logs
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.user
+*.creator.user*
+*.pro.user*
+*.kdev4
+.kdev_include_paths
+
+# macOS
+.DS_Store
+
+# Linux temp files
+*~
+\#*\#
